@@ -11,7 +11,7 @@ Write a perl script, which uses no CPAN or 'packages', to:
 - the table output should only provide the charsets with count above the median of counts
 
 ### Script :
-* Program Name ** bin/dict_categorizewords.pl  **
+* Program Name **bin/dict_categorizewords.pl**
 * Dependency :   libperl >= 5
 
 ### Usage :
