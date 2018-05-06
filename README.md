@@ -14,7 +14,11 @@ Write a perl script, which uses no CPAN or 'packages', to:
 
 ### Script :
 * Program Name : **bin/dict_categorizewords.pl**
-* Dependency :   libperl >= 5
+* Dependency :   
+```
+libperl >= 5,
+libgetopt-long-descriptive-perl
+```
 
 ### Usage :
 ```
