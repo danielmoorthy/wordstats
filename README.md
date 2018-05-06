@@ -3,7 +3,7 @@ This repository contains some word processing exercises
 
 ## Exercise 1 - Categorize Sequential Words from a Dictionary file
 
-### Todo
+### Goal :
 Given a dictionary of words at /usr/share/dict/words
 
 Write a perl script, which uses no CPAN or 'packages', to:
