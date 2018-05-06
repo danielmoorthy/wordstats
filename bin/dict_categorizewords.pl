@@ -114,12 +114,30 @@ Summary
 
 # * Display All Word Counts above median count value
 print "Word Count\n----------\n";
-foreach my $word (sort( { length($b) <=> length($a) } keys(%wordDict))) {
+=item This sorts only by length.
+#foreach my $word (sort( { length($b) <=> length($a) } keys(%wordDict))) {
+#	my $wordCount = $wordDict{$word};
+#	next if ($wordCount < $medianCount);
+#	print "    $word      =>  $wordCount\n";
+#	push (@topWordList, $word) if ($wordCount == $topWordCount);
+#}
+=cut
+## Sort by character length first, then alpha
+my %dictByLen = ();
+foreach my $word (keys(%wordDict)) {
 	my $wordCount = $wordDict{$word};
 	next if ($wordCount < $medianCount);
-	print "    $word      =>  $wordCount\n";
+	push (@{$dictByLen{length($word)}}, $word);
 	push (@topWordList, $word) if ($wordCount == $topWordCount);
 }
+foreach my $wordLen (sort { $b <=> $a } keys(%dictByLen)) {
+	next if (!ref($dictByLen{$wordLen}));
+	foreach my $word (sort (@{$dictByLen{$wordLen}})) {
+		my $wordCount = $wordDict{$word};
+		print "    $word      =>  $wordCount\n";
+	}
+}
+
 print "\n";
 
 # * Display Top Word Count
