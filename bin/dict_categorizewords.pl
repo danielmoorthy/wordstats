@@ -25,6 +25,12 @@ if ($config{help}) {
 	exit(0);
 }
 
+
+debugPrint("Current Configurations are .. \n");
+foreach my $key (keys (%config)) {
+	debugPrint("   $key\t=>\t$config{$key}\n");
+}
+
 my (@wordList);
 my (%wordDict);
 my ($startTime, $endTime, $prepareTime, $processTime);
@@ -134,12 +140,17 @@ print "\n";
 
 sub usage {
 	my %cnf = getConfig();
-	print "Usage: $0 --dictfile <file> --minlen <number> --topcount <number>\n";
-	print "Default Values:\n";
-	
-	foreach my $key (keys (%cnf)) {
-		print "     $key\t=>\t$cnf{$key}\n";
-	}
+	print "\n";
+	print "Usage: $0 --dictfile <file> --minlen <number> --topcount <number> --debug\n";
+	print "  --dictfile   :  Specific the dict file path. Default=" .  
+		$cnf{dictfile} . "\n";
+	print "  --minlen     :  Minimum word slice size. Default=" .  
+		$cnf{minlen} . "\n";
+	print "  --topcount   :  Shows top N word match count. Default=" .  
+		$cnf{topcount} . "\n";
+	print "  --debug      :  Show debug messages. Default=0" .  
+		$cnf{topcount} . "\n";
+	print "\n";
 
 	return;
 }
@@ -166,7 +177,7 @@ sub getConfig {
 	my %config = (
 		dictfile  => "/usr/share/dict/words",
 		minlen    => 2,
-		topcount  => 1,
+		topcount  => 5,
 		debug     => 0,
 	);
 
