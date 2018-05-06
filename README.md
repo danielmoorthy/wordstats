@@ -11,16 +11,20 @@ Write a perl script, which uses no CPAN or 'packages', to:
 - the table output should only provide the charsets with count above the median of counts
 
 ### Script :
-* Program Name **bin/dict_categorizewords.pl**
+* Program Name : **bin/dict_categorizewords.pl**
 * Dependency :   libperl >= 5
 
 ### Usage :
-* dict_categorizewords.pl --help
+```
+dict_categorizewords.pl --help
+```
 
 ### Default values :
 * Dictionary File
 ```
    --dictfile : /usr/share/dict/words
-````
-
-
+```
+* Minimum word length to slice
+```
+   --minlen : 2
+```

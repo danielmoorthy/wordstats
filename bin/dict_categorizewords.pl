@@ -10,7 +10,6 @@ our %config = getConfig();
 my $optResult = GetOptions (
 	'dictfile=s'	=> \$config{dictfile},
 	'minlen=i'	=> \$config{minlen},
-	'topcount=i'	=> \$config{topcount},
 	'debug'		=> \$config{debug},
 	'help'		=> \$config{help},
 );
@@ -25,15 +24,14 @@ if ($config{help}) {
 	exit(0);
 }
 
-
 debugPrint("Current Configurations are .. \n");
 foreach my $key (keys (%config)) {
 	debugPrint("   $key\t=>\t$config{$key}\n");
 }
 
-my (@wordList);
+my (@wordList, @topWordList);
 my (%wordDict);
-my ($startTime, $endTime, $prepareTime, $processTime);
+my ($startTime, $endTime, $prepareTime, $processTime, $topWordCount);
 
 ##############################
 # Step 1: Load the dict file #
@@ -83,8 +81,9 @@ debugPrint("Step 2: Done processing the dict file contents\n");
 my %_tmpHash = ();
 @_tmpHash{values(%wordDict)} = ();
 my @matchCountList = sort( { $b <=> $a } keys (%_tmpHash));
-my ($medianCount, $matchCount);
+$topWordCount = $matchCountList[0];
 
+my ($medianCount, $matchCount);
 # * If Odd number of matchCountList, then the center element is mean value
 # * If Even number of matchCountList, then average of center 2 elements is
 #   mean value
@@ -97,15 +96,6 @@ if ($matchCount % 2) {
 }
 debugPrint("Step 3: Done calculating the median count\n");
 
-# * Finding top n word counts
-my $topCount = 0;
-my %topDict;
-foreach my $word (sort( { $wordDict{$b} <=> $wordDict{$a} } keys(%wordDict))) {
-	my $count = $wordDict{$word};
-	$topDict{$word} = $count;
-	$topCount++; last if ($topCount >= $config{topcount});
-}
-
 #############################################
 # Step 4: Now it is time to display results #
 #############################################
@@ -113,21 +103,14 @@ foreach my $word (sort( { $wordDict{$b} <=> $wordDict{$a} } keys(%wordDict))) {
 print "
 Summary
 -------
-    Input File Name : $config{dictfile}
-    Total Words processed : " . scalar(@wordList) . "
-    Time taken to process : " . $processTime . " secs
-    Total Unique Sequential words found : " . scalar(keys(%wordDict)) . "
-    The Median word count is : $medianCount
+    Input File name         : $config{dictfile}
+    Minimum word slice size : $config{minlen}
+    Total Words processed   : " . scalar(@wordList) . "
+    Time taken to process   : " . $processTime . " secs
+    Total Unique Seq. words : " . scalar(keys(%wordDict)) . "
+    Median word count is    : $medianCount
 
 ";
-
-# * Display Top Word Count
-print "Top Word Count\n--------------\n";
-foreach my $topWord (sort( { $topDict{$b} <=> $topDict{$a} } keys(%topDict))) {
-	my $topWordCount = $topDict{$topWord};
-	print "    $topWord      =>  $topWordCount\n";
-}
-print "\n";
 
 # * Display All Word Counts above median count value
 print "Word Count\n----------\n";
@@ -135,21 +118,27 @@ foreach my $word (sort( { length($b) <=> length($a) } keys(%wordDict))) {
 	my $wordCount = $wordDict{$word};
 	next if ($wordCount < $medianCount);
 	print "    $word      =>  $wordCount\n";
+	push (@topWordList, $word) if ($wordCount == $topWordCount);
+}
+print "\n";
+
+# * Display Top Word Count
+print "Top Word Count\n--------------\n";
+foreach my $topWord (sort(@topWordList)) {
+	my $topWordCount = $wordDict{$topWord};
+	print "    $topWord      =>  $topWordCount\n";
 }
 print "\n";
 
 sub usage {
 	my %cnf = getConfig();
 	print "\n";
-	print "Usage: $0 --dictfile <file> --minlen <number> --topcount <number> --debug\n";
-	print "  --dictfile   :  Specific the dict file path. Default=" .  
+	print "Usage: $0 --dictfile <file> --minlen <number> --debug\n";
+	print "  --dictfile   :  Specific the dict file path. Default = " .  
 		$cnf{dictfile} . "\n";
-	print "  --minlen     :  Minimum word slice size. Default=" .  
+	print "  --minlen     :  Minimum word slice size. Default = " .  
 		$cnf{minlen} . "\n";
-	print "  --topcount   :  Shows top N word match count. Default=" .  
-		$cnf{topcount} . "\n";
-	print "  --debug      :  Show debug messages. Default=0" .  
-		$cnf{topcount} . "\n";
+	print "  --debug      :  Show debug messages. Default=0\n";
 	print "\n";
 
 	return;
@@ -177,7 +166,6 @@ sub getConfig {
 	my %config = (
 		dictfile  => "/usr/share/dict/words",
 		minlen    => 2,
-		topcount  => 5,
 		debug     => 0,
 	);
 
