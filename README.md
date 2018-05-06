@@ -30,3 +30,35 @@ dict_categorizewords.pl --help
 ```
    --minlen : 2
 ```
+
+### Sample Execution :
+```
+moorthy@ubuntu:~/Github/wordstats/bin$ ./dict_categorizewords.pl --dictfile /tmp/words --minlen 10
+
+Summary
+-------
+    Input File name         : /tmp/words
+    Minimum word slice size : 10
+    Total Words processed   : 3518
+    Time taken to process   : 0 secs
+    Total Unique Seq. words : 837
+    Median word count is    : 3.5
+
+Word Count
+----------
+    weatherproof      =>  4
+    wrongheaded      =>  4
+    eatherproof      =>  4
+    weatherproo      =>  4
+    weightlift      =>  5
+    rongheaded      =>  4
+    weatherpro      =>  4
+    eatherproo      =>  4
+    atherproof      =>  4
+    wrongheade      =>  4
+    waterproof      =>  6
+
+Top Word Count
+--------------
+    waterproof      =>  6
+```
